@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUTO NINJA IDENTITY PROVIDER</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to AUTO NINJA IDENTITY PROVIDER</h1>
+        <p>This page provides details on how to use the OAuth provider for authentication.</p>
+        <div class="row">
+            <div class="column">
+                <div class="config">
+                    <h2>OAuth Provider Details</h2>
+                    <p>Use the following details to configure your OAuth client:</p>
+                    <label for="client-id">Client ID:</label>
+                    <input type="text" id="client-id" value="" readonly>
+
+                    <label for="client-secret">Client Secret:</label>
+                    <input type="text" id="client-secret" value="" readonly>
+
+                    <label for="callback-url">Callback URL:</label>
+                    <input type="text" id="callback-url" value="http://localhost:3000/auth/callback" readonly>
+                </div>
+            </div>
+            <div class="column">
+                <div class="auth-forms">
+                    <h2>User Registration</h2>
+                    <form id="register-form">
+                        <label for="register-username">Username:</label>
+                        <input type="text" id="register-username" required>
+                        <label for="register-password">Password:</label>
+                        <input type="password" id="register-password" required>
+                        <button type="submit">Register</button>
+                    </form>
+                    <h2>User Login</h2>
+                    <form id="login-form">
+                        <label for="login-username">Username:</label>
+                        <input type="text" id="login-username" required>
+                        <label for="login-password">Password:</label>
+                        <input type="password" id="login-password" required>
+                        <button type="submit">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="sample-code">
+            <h2>Sample Code to Generate Token</h2>
+            <pre>
+<code>
+const clientId = window.CLIENT_ID;
+const clientSecret = window.CLIENT_SECRET;
+const tokenUrl = 'http://localhost:3000/oauth2/token';
+
+const params = {
+    grant_type: 'authorization_code',
+    code: 'your-authorization-code',
+    redirect_uri: 'http://localhost:3000/auth/callback',
+    client_id: clientId,
+    client_secret: clientSecret
+};
+
+fetch(tokenUrl, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(params)
+})
+.then(response => response.json())
+.then(data => console.log('Token:', data))
+.catch(error => console.error('Error:', error));
+</code>
+            </pre>
+        </div>
+    </div>
+    <script>
+        // Populate the input fields with the client ID and secret
+        document.getElementById('client-id').value = window.CLIENT_ID;
+        document.getElementById('client-secret').value = window.CLIENT_SECRET;
+
+        // Handle registration form submission
+        document.getElementById('register-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => console.error('Error:', error));
+        });
+
+        // Handle login form submission
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then(response => response.json())
+            .then(data => alert('Token: ' + data.token))
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

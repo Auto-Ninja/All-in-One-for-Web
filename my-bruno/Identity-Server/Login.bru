@@ -1,0 +1,37 @@
+meta {
+  name: Login
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/oauth2/token
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type:: application/x-www-form-urlencoded
+}
+
+body:json {
+  {
+      "grant_type": "authorization_code",
+      "code": "your-authorization-code",
+      "redirect_uri": "http://localhost:3000/auth/callback",
+      "client_id": "{{clientid}}",
+      "client_secret": "{{clientsecret}}"
+  }
+  
+}
+
+body:text {
+  {
+      "grant_type": "authorization_code",
+      "code": "your-authorization-code",
+      "redirect_uri": "http://localhost:3000/auth/callback",
+      "client_id": {clientsecret},
+      "client_secret": "your-client-secret"
+  }
+  
+}
